@@ -4,7 +4,6 @@ public class ChangelogPeer {
 
     private String peerKey;
     private String hostPort;
-    private String notaryHostPort;
 
     public String getPeerKey() {
         return peerKey;
@@ -20,13 +19,5 @@ public class ChangelogPeer {
 
     public void setHostPort(String hostPort) {
         this.hostPort = hostPort;
-    }
-
-    public String getNotaryHostPort() {
-        return notaryHostPort;
-    }
-
-    public void setNotaryHostPort(String notaryHostPort) {
-        this.notaryHostPort = notaryHostPort;
     }
 }
