@@ -1,0 +1,22 @@
+buildscript {
+    ext.kotlin_version = '1.3.10'
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven { url 'https://jitpack.io' }
+}
+
+apply plugin: 'java'
+apply plugin: 'maven'
+
+
+dependencies {
+    // Iroha Pure Java library
+    compile 'com.github.hyperledger.iroha-java:client:4.0.0'
+}
