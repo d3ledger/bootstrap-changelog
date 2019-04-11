@@ -1,22 +1,44 @@
 buildscript {
     ext.kotlin_version = '1.3.10'
+
     repositories {
         mavenCentral()
         jcenter()
     }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
 }
 
-repositories {
-    mavenCentral()
-    jcenter()
-    maven { url 'https://jitpack.io' }
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'kotlin'
+    apply plugin: 'maven'
+    repositories {
+        mavenCentral()
+        // for Ktor
+        jcenter()
+        maven { url = 'https://dl.bintray.com/kotlin/ktor' }
+        maven { url 'https://jitpack.io' }
+    }
 }
 
-apply plugin: 'java'
-apply plugin: 'maven'
+allprojects {
+    dependencies {
+        // Iroha Pure Java library
+        compile 'com.github.hyperledger.iroha-java:client:4.0.0'
+        compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+        // unit tests
+        testCompile('org.junit.jupiter:junit-jupiter-api:5.2.0')
+        testRuntime('org.junit.jupiter:junit-jupiter-engine:5.2.0')
+    }
+}
 
-
-dependencies {
-    // Iroha Pure Java library
-    compile 'com.github.hyperledger.iroha-java:client:4.0.0'
+allprojects {
+    compileKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
 }
