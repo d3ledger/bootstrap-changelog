@@ -1,5 +1,7 @@
 @file:JvmName("ChangelogAppMain")
+
 package jp.co.soramitsu.bootstrap.changelog
+
 import com.github.kittinunf.result.Result
 import com.github.kittinunf.result.failure
 import com.github.kittinunf.result.map

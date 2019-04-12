@@ -24,6 +24,7 @@ class ChangelogExecutorService(
 ) {
 
     private val logger = KLogging().logger
+    //TODO move it to parser
     private val irohaKeyRegexp = Regex("[A-Za-z0-9_]{1,64}")
 
     /**
@@ -78,7 +79,7 @@ class ChangelogExecutorService(
             .sendBatchMST(changelogBatch.map { tx -> tx.build() }).fold(
                 {
                     logger.info(
-                        "Changelog batch (schemaVersion:${changelog.schemaVersion} has been successfully sent"
+                        "Changelog batch (schemaVersion:${changelog.schemaVersion}) has been successfully sent"
                     )
                 },
                 { ex -> throw ex })
