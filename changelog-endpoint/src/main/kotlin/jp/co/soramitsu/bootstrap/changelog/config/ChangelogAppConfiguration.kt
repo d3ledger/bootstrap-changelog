@@ -5,10 +5,14 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class ChangelogAppConfiguraion {
+class ChangelogAppConfiguration {
 
     private val changelogConfig =
-        loadConfigs("changelog", ChangelogConfig::class.java, "/changelog/changelog.properties")
+        loadConfigs(
+            prefix = "changelog",
+            type = ChangelogConfig::class.java,
+            filename = "/changelog/changelog.properties"
+        )
 
     @Bean
     fun irohaAPI() = IrohaAPI(changelogConfig.irohaHost, changelogConfig.irohaPort)

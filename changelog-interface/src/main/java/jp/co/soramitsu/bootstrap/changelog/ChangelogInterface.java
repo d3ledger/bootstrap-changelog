@@ -1,7 +1,5 @@
 package jp.co.soramitsu.bootstrap.changelog;
-
 import jp.co.soramitsu.iroha.java.Transaction;
-
 import javax.xml.bind.DatatypeConverter;
 import java.util.List;
 import java.util.stream.Collectors;
