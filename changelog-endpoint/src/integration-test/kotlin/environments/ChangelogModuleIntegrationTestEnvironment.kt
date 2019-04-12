@@ -3,6 +3,7 @@ package environments
 import com.google.gson.Gson
 import iroha.protocol.BlockOuterClass
 import iroha.protocol.Primitive
+import iroha.protocol.QryResponses
 import jp.co.soramitsu.bootstrap.changelog.ChangelogAccountPublicInfo
 import jp.co.soramitsu.bootstrap.changelog.ChangelogInterface
 import jp.co.soramitsu.bootstrap.changelog.dto.ChangelogFileRequest
@@ -14,6 +15,7 @@ import jp.co.soramitsu.bootstrap.changelog.service.ChangelogExecutorService
 import jp.co.soramitsu.bootstrap.changelog.service.ChangelogHistoryService
 import jp.co.soramitsu.bootstrap.changelog.service.changelogHistoryStorageAccountId
 import jp.co.soramitsu.crypto.ed25519.Ed25519Sha3
+import jp.co.soramitsu.iroha.java.Query
 import jp.co.soramitsu.iroha.java.QueryAPI
 import jp.co.soramitsu.iroha.java.Transaction
 import jp.co.soramitsu.iroha.java.Utils
@@ -184,6 +186,29 @@ class ChangelogModuleIntegrationTestEnvironment : Closeable {
                 superuserKeys = listOf(HexKeyPair.toHexKeyPair(superuserKeyPair))
             )
         )
+    }
+
+    /**
+     * Checks if account exists
+     * @param accountId - id of account to check
+     * @return true if exists
+     */
+    fun accountExists(accountId: String): Boolean {
+        val query = Query.builder(ChangelogInterface.superuserAccountId, 1)
+            .getAccount(accountId)
+            .buildSigned(superuserKeyPair)
+        val response = irohaAPI.query(query)
+        return if (response.hasErrorResponse()) {
+            if (response.errorResponse.reason == QryResponses.ErrorResponse.Reason.NO_ACCOUNT) {
+                false
+            } else {
+                throw Exception(
+                    "Cannot get account $accountId. Error code ${response.errorResponse.errorCode}"
+                )
+            }
+        } else {
+            true
+        }
     }
 
     /**

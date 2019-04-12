@@ -10,6 +10,7 @@ import jp.co.soramitsu.bootstrap.changelog.ChangelogInterface
 import jp.co.soramitsu.bootstrap.changelog.endpoint.changelogModule
 import jp.co.soramitsu.bootstrap.changelog.service.changelogHistoryStorageAccountId
 import org.json.JSONObject
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -75,11 +76,11 @@ class ChangelogModuleIntegrationTest {
         changelogModule(changelogEnvironment.changelogExecutor)
     }) {
         val random = Random()
-        val randomAccountName = random.nextInt().absoluteValue.toString()
+        val firstRandomAccountName = random.nextInt().absoluteValue.toString()
         val randomSchema = random.nextInt().absoluteValue.toString()
         //Create file that creates randomly named account
-        changelogEnvironment.createAccountScriptFile(randomAccountName, randomSchema)
-        val request = changelogEnvironment.createChangelogFileRequest(randomAccountName)
+        changelogEnvironment.createAccountScriptFile(firstRandomAccountName, randomSchema)
+        val request = changelogEnvironment.createChangelogFileRequest(firstRandomAccountName)
 
         with(handleRequest(HttpMethod.Post, "/changelog/changelogFile") {
             setBody(changelogEnvironment.gson.toJson(request))
@@ -87,11 +88,16 @@ class ChangelogModuleIntegrationTest {
             assertEquals(HttpStatusCode.OK, response.status())
         }
         //Second changelog attempt
+        val secondRandomAccountName = random.nextInt().absoluteValue.toString()
+        //Same schema, new account
+        changelogEnvironment.createAccountScriptFile(secondRandomAccountName, randomSchema)
         with(handleRequest(HttpMethod.Post, "/changelog/changelogFile") {
             setBody(changelogEnvironment.gson.toJson(request))
         }) {
             assertEquals(HttpStatusCode.OK, response.status())
         }
+        //Account was not created because of old schema
+        assertFalse(changelogEnvironment.accountExists("$secondRandomAccountName@d3"))
     }
 
     /**
