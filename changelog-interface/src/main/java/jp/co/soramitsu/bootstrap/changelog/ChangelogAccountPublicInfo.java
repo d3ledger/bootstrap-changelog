@@ -1,8 +1,27 @@
 package jp.co.soramitsu.bootstrap.changelog;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ChangelogAccountPublicInfo {
+public class ChangelogAccountPublicInfo implements Serializable {
+
+    private static final long serialVersionUID = 7500670093040730734L;
+
+    //For serialization
+    public ChangelogAccountPublicInfo() {
+
+    }
+
+    public ChangelogAccountPublicInfo(
+            int quorum,
+            String domainId,
+            String accountName,
+            List<String> pubKeys) {
+        this.quorum = quorum;
+        this.domainId = domainId;
+        this.accountName = accountName;
+        this.pubKeys = pubKeys;
+    }
 
     private int quorum;
     private String domainId;
