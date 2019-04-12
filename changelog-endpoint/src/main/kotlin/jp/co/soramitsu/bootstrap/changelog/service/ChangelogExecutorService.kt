@@ -1,6 +1,5 @@
 package jp.co.soramitsu.bootstrap.changelog.service
 
-import jp.co.soramitsu.bootstrap.changelog.ChangelogInterface
 import jp.co.soramitsu.bootstrap.changelog.dto.ChangelogFileRequest
 import jp.co.soramitsu.bootstrap.changelog.dto.ChangelogRequestDetails
 import jp.co.soramitsu.bootstrap.changelog.dto.ChangelogScriptRequest
@@ -24,8 +23,6 @@ class ChangelogExecutorService(
 ) {
 
     private val logger = KLogging().logger
-    //TODO move it to parser
-    private val irohaKeyRegexp = Regex("[A-Za-z0-9_]{1,64}")
 
     /**
      * Executes file based changelog
@@ -52,7 +49,6 @@ class ChangelogExecutorService(
     private fun execute(changelogRequestDetails: ChangelogRequestDetails, script: String) {
         // Parse changelog script
         val changelog = changelogParser.parse(script)
-        validateChangelog(changelog)
         if (alreadyExecutedSchema(changelog.schemaVersion, irohaAPI, changelogRequestDetails.superuserKeys)) {
             logger.warn("Schema version '${changelog.schemaVersion}' has been executed already")
             return
@@ -83,19 +79,5 @@ class ChangelogExecutorService(
                     )
                 },
                 { ex -> throw ex })
-    }
-
-    /**
-     * Checks if changelog is valid
-     * @param changelog - changelog to check
-     * @throws IllegalArgumentException is changelog is not valid
-     */
-    private fun validateChangelog(changelog: ChangelogInterface) {
-        if (!changelog.schemaVersion.matches(irohaKeyRegexp)) {
-            throw IllegalArgumentException(
-                "Changelog schema version '${changelog.schemaVersion}' is invalid. " +
-                        "Must match regex $irohaKeyRegexp"
-            )
-        }
     }
 }
