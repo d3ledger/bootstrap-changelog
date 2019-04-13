@@ -8,4 +8,6 @@ interface ChangelogConfig {
     val irohaHost: String
     // Port of Iroha node
     val irohaPort: Int
+    // Port of changelog
+    val port: Int
 }
