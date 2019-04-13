@@ -9,6 +9,7 @@ import io.ktor.server.engine.applicationEngineEnvironment
 import io.ktor.server.engine.connector
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import jp.co.soramitsu.bootstrap.changelog.config.changelogConfig
 import jp.co.soramitsu.bootstrap.changelog.endpoint.changelogModule
 import jp.co.soramitsu.bootstrap.changelog.endpoint.healthCheckModule
 import jp.co.soramitsu.bootstrap.changelog.service.ChangelogExecutorService
@@ -35,7 +36,7 @@ fun main(args: Array<String>) {
                 healthCheckModule()
             }
             connector {
-                port = 9999
+                port = changelogConfig.port
             }
         }
         embeddedServer(Netty, env).start(true)
