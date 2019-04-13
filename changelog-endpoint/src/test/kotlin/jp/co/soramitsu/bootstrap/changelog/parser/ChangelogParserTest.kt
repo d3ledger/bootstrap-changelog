@@ -45,6 +45,37 @@ class BadInterface implements Runnable {
         parser.parse(script)
     }
 
+
+    /**
+     * @given script with invalid schema version
+     * @when parse() is called
+     * @then IllegalArgumentException is thrown
+     */
+    @Test(expected = IllegalArgumentException::class)
+    fun testBadSchemaScript() {
+        val script = """
+import jp.co.soramitsu.bootstrap.changelog.ChangelogInterface
+import jp.co.soramitsu.bootstrap.changelog.ChangelogAccountPublicInfo
+import jp.co.soramitsu.bootstrap.changelog.ChangelogPeer
+import jp.co.soramitsu.iroha.java.Transaction
+
+class TestChangeLog implements ChangelogInterface {
+
+    @Override
+    String getSchemaVersion() {
+        return "BAD_SCHEMA!"
+    }
+
+    @Override
+    Transaction createChangelog(List<ChangelogAccountPublicInfo> accounts,
+                                      List<ChangelogPeer> peers) {
+        return null
+    }
+}
+        """.trimIndent()
+        parser.parse(script)
+    }
+
     /**
      * @given valid script
      * @when parse() is called
@@ -57,24 +88,23 @@ import jp.co.soramitsu.bootstrap.changelog.ChangelogInterface
 import jp.co.soramitsu.bootstrap.changelog.ChangelogAccountPublicInfo
 import jp.co.soramitsu.bootstrap.changelog.ChangelogPeer
 import jp.co.soramitsu.iroha.java.Transaction
-import org.jetbrains.annotations.NotNull
 
 class TestChangeLog implements ChangelogInterface {
 
     @Override
     String getSchemaVersion() {
-        return "1.0"
+        return "1_0"
     }
 
     @Override
-    Transaction createChangelog(@NotNull List<ChangelogAccountPublicInfo> accounts,
-                                      @NotNull List<ChangelogPeer> peers) {
+    Transaction createChangelog(List<ChangelogAccountPublicInfo> accounts,
+                                      List<ChangelogPeer> peers) {
         return null
     }
 }
         """.trimIndent()
         val changelog = parser.parse(script)
         assertNull(changelog.createChangelog(emptyList(), emptyList()))
-        assertEquals("1.0", changelog.schemaVersion)
+        assertEquals("1_0", changelog.schemaVersion)
     }
 }

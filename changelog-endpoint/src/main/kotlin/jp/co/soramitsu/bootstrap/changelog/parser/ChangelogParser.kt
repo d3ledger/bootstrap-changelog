@@ -4,6 +4,8 @@ import groovy.lang.GroovyClassLoader
 import jp.co.soramitsu.bootstrap.changelog.ChangelogInterface
 import org.springframework.stereotype.Component
 
+private val irohaKeyRegexp = Regex("[A-Za-z0-9_]{1,64}")
+
 /**
  * Changelog Groovy parser
  */
@@ -29,6 +31,13 @@ class ChangelogParser {
         }
         val instance = scriptClass.newInstance()
         if (instance is ChangelogInterface) {
+            //Check schema version
+            if (!instance.schemaVersion.matches(irohaKeyRegexp)) {
+                throw IllegalArgumentException(
+                    "Changelog schema version '${instance.schemaVersion}' is invalid. " +
+                            "Must match regex $irohaKeyRegexp"
+                )
+            }
             return instance
         }
         throw IllegalArgumentException(
