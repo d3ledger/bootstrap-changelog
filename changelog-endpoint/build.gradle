@@ -4,6 +4,9 @@ buildscript {
         mavenCentral()
         jcenter()
     }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.1'
+    }
 }
 
 plugins {
@@ -11,6 +14,9 @@ plugins {
 }
 
 apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
+shadowDistZip.classifier = 'shadow'
+shadowDistTar.classifier = 'shadow'
 
 mainClassName = "jp.co.soramitsu.bootstrap.changelog.ChangelogAppMain"
 
