@@ -8,7 +8,7 @@ val changelogConfig =
     loadConfigs(
         prefix = "changelog",
         type = ChangelogConfig::class.java,
-        filename = "/changelog/changelog.properties"
+        filename = "/changelog.properties"
     )
 
 @Configuration
