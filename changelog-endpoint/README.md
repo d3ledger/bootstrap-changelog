@@ -1,5 +1,5 @@
 # Changelog endpoint
-The `changelog-endpoint` module is a REST service intended for Iroha data model migrations: adding signatories, setting account details, creating domains, appending roles and etc.
+The `changelog-endpoint` module is a REST service intended for Iroha data model migrations: adding signatories, setting account details, creating domains, appending roles etc.
 
 ## Simplified flow
 1) The service executes given Groovy script that implements `ChangelogInterface`.
