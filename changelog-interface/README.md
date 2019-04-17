@@ -1,7 +1,7 @@
 # Changelog interface
 The `changelog-interface` module consists of a simple Java interface located at `jp.co.soramitsu.bootstrap.changelog.ChangelogInterface`.  Changelog scripts development - is the only purpose of the interface.
 ## Integration
-The module is deployed to jitpack repository. It may be integrated in any gradle project using the following command:
+The module is deployed to the jitpack repository. It may be integrated in any gradle project using the following command:
 ```
 implementation 'com.github.d3ledger.bootstrap-changelog:changelog-interface:2.0.0'`
 ```
