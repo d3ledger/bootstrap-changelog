@@ -50,7 +50,7 @@ dependencies {
     // Configuration
     compile group: 'com.jdiazcano.cfg4k', name: 'cfg4k-core', version: '0.9.3'
     //Iroha-java related
-    testCompile('com.github.hyperledger.iroha-java:testcontainers:4.0.0')
+    testCompile('com.github.hyperledger.iroha-java:testcontainers:4.1.1')
     testCompile('org.slf4j:slf4j-api:1.7.25')
     testCompile('org.slf4j:slf4j-simple:1.7.25')
 }
