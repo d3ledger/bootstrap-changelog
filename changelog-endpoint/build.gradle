@@ -22,10 +22,12 @@ mainClassName = "jp.co.soramitsu.bootstrap.changelog.ChangelogAppMain"
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     compile project(":changelog-interface")
+    implementation 'com.github.d3ledger.notary:notary-commons:3041ba9757'
     // Spring
     compile group: 'org.springframework', name: 'spring-context', version: '5.1.4.RELEASE'
     // Logging
