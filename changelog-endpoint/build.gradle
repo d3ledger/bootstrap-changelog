@@ -27,7 +27,7 @@ repositories {
 
 dependencies {
     compile project(":changelog-interface")
-    compile 'com.github.d3ledger.notary:notary-commons:3041ba9757'
+    compile 'com.github.d3ledger.notary:notary-commons:12c385205a'
     // Spring
     compile group: 'org.springframework', name: 'spring-context', version: '5.1.4.RELEASE'
     // Logging
