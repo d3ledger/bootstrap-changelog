@@ -47,8 +47,6 @@ dependencies {
     compile "io.ktor:ktor-gson:$ktor_version"
     // Swagger
     compile 'de.nielsfalk.ktor:ktor-swagger:0.5.0'
-    // Configuration
-    compile group: 'com.jdiazcano.cfg4k', name: 'cfg4k-core', version: '0.9.3'
     //Iroha-java related
     testCompile('com.github.hyperledger.iroha-java:testcontainers:4.0.0')
     // https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java-util
