@@ -9,7 +9,7 @@ val changelogConfig =
     loadRawLocalConfigs(
         prefix = "changelog",
         type = ChangelogConfig::class.java,
-        filename = "/changelog.properties"
+        filename = "changelog.properties"
     )
 
 @Configuration
