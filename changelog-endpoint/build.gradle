@@ -27,7 +27,7 @@ repositories {
 
 dependencies {
     compile project(":changelog-interface")
-    compile 'com.github.d3ledger.notary:notary-commons:12c385205a'
+    compile 'com.github.d3ledger.notary:notary-commons:7bc1c156b5'
     // Spring
     compile group: 'org.springframework', name: 'spring-context', version: '5.1.4.RELEASE'
     // Logging
@@ -48,7 +48,7 @@ dependencies {
     // Swagger
     compile 'de.nielsfalk.ktor:ktor-swagger:0.5.0'
     //Iroha-java related
-    testCompile('com.github.hyperledger.iroha-java:testcontainers:4.0.0')
+    testCompile('com.github.hyperledger.iroha-java:testcontainers:5.1.1')
     // https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java-util
     testCompile group: 'com.google.protobuf', name: 'protobuf-java-util', version: '3.7.1'
     testCompile('org.slf4j:slf4j-api:1.7.25')
