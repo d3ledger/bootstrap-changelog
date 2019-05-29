@@ -4,6 +4,7 @@ import jp.co.soramitsu.bootstrap.changelog.dto.ChangelogFileRequest
 import jp.co.soramitsu.bootstrap.changelog.dto.ChangelogRequestDetails
 import jp.co.soramitsu.bootstrap.changelog.dto.ChangelogScriptRequest
 import jp.co.soramitsu.bootstrap.changelog.helper.*
+import jp.co.soramitsu.bootstrap.changelog.iroha.getHashes
 import jp.co.soramitsu.bootstrap.changelog.iroha.sendBatchMST
 import jp.co.soramitsu.bootstrap.changelog.parser.ChangelogParser
 import jp.co.soramitsu.iroha.java.IrohaAPI
@@ -49,6 +50,7 @@ class ChangelogExecutorService(
     private fun execute(changelogRequestDetails: ChangelogRequestDetails, script: String) {
         // Parse changelog script
         val changelog = changelogParser.parse(script)
+        logger.info("Script has been successfully parsed. Script content\n$script")
         if (alreadyExecutedSchema(changelog.schemaVersion, irohaAPI, changelogRequestDetails.superuserKeys)) {
             logger.warn("Schema version '${changelog.schemaVersion}' has been executed already")
             return
