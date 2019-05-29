@@ -1,3 +1,8 @@
+/*
+ * Copyright Soramitsu Co., Ltd. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package jp.co.soramitsu.bootstrap.changelog;
 import jp.co.soramitsu.iroha.java.Transaction;
 import javax.xml.bind.DatatypeConverter;
