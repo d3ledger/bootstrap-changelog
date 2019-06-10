@@ -1,5 +1,6 @@
 package endpoint
 
+import com.github.kittinunf.result.failure
 import environments.ChangelogModuleIntegrationTestEnvironment
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
@@ -63,6 +64,41 @@ class ChangelogModuleIntegrationTest {
         assertEquals(
             "{\"superuser@bootstrap\": {\"test_key\": \"test_value\"}}",
             account.jsonData
+        )
+    }
+
+    /**
+     * @given script file with notary expansion logic
+     * @when script file is passed to changelog service
+     * @then notary is expanded
+     */
+    @Test
+    fun testExecuteNotaryExpansion() = withTestApplication({
+        changelogModule(changelogEnvironment.changelogExecutor)
+    }) {
+        changelogEnvironment.grantPermissionsToSuperuser().failure { ex -> throw ex }
+        val random = Random()
+        val randomSchema = random.nextInt().absoluteValue.toString()
+        //Create file that creates randomly named account
+        val request = changelogEnvironment.createNotaryExpansionChangelogRequest()
+        with(handleRequest(HttpMethod.Post, "/changelog/changelogFile") {
+            setBody(changelogEnvironment.gson.toJson(request))
+        }) {
+            assertEquals(HttpStatusCode.OK, response.status())
+        }
+        val changelogReducedTxHash = JSONObject(
+            changelogEnvironment.queryAPI.getAccountDetails(
+                changelogHistoryStorageAccountId,
+                ChangelogInterface.superuserAccountId,
+                randomSchema
+            )
+        ).getJSONObject(ChangelogInterface.superuserAccountId).get(randomSchema).toString()
+        assertNotNull(changelogReducedTxHash)
+
+        val account = changelogEnvironment.queryAPI.getAccount(changelogEnvironment.notaryAccountId).account
+        assertEquals(
+            2,
+            account.quorum
         )
     }
 
