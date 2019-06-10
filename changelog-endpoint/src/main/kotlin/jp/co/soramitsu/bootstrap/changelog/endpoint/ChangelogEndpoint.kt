@@ -14,6 +14,7 @@ import jp.co.soramitsu.bootstrap.changelog.dto.ChangelogRequestDetails
 import jp.co.soramitsu.bootstrap.changelog.endpoint.routing.changelogFile
 import jp.co.soramitsu.bootstrap.changelog.endpoint.routing.changelogScript
 import jp.co.soramitsu.bootstrap.changelog.service.ChangelogExecutorService
+import jp.co.soramitsu.bootstrap.changelog.service.ExecutionStatus
 
 
 /**
@@ -45,8 +46,8 @@ fun Application.changelogModule(changelogExecutorService: ChangelogExecutorServi
  */
 fun validateChangelog(
     request: ChangelogRequestDetails,
-    executor: () -> Unit
-): Result<Unit, Exception> {
+    executor: () -> ExecutionStatus
+): Result<ExecutionStatus, Exception> {
     return Result.of {
         //Validate request
         validateChangelogRequest(request)

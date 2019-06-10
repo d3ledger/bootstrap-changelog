@@ -94,7 +94,7 @@ class ChangelogModuleIntegrationTest {
         with(handleRequest(HttpMethod.Post, "/changelog/changelogFile") {
             setBody(changelogEnvironment.gson.toJson(request))
         }) {
-            assertEquals(HttpStatusCode.OK, response.status())
+            assertEquals(HttpStatusCode.NotModified, response.status())
         }
         //Account was not created because of old schema
         assertFalse(changelogEnvironment.accountExists("$secondRandomAccountName@d3"))
