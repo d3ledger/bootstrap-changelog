@@ -1,5 +1,7 @@
 package jp.co.soramitsu.bootstrap.changelog;
+
 import jp.co.soramitsu.iroha.java.Transaction;
+
 import javax.xml.bind.DatatypeConverter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +31,7 @@ public interface ChangelogInterface {
      * @return list of public keys
      * @throws IllegalArgumentException if there is no public keys we are interested in
      */
+    @Deprecated
     static List<byte[]> getPubKeys(String accountName, List<ChangelogAccountPublicInfo> accounts) {
         return accounts.stream().filter(
                 account -> accountName.equals(account.getAccountName())
@@ -40,5 +43,26 @@ public interface ChangelogInterface {
             ).collect(Collectors.toList());
         }).orElseThrow(() ->
                 new IllegalArgumentException("No pubKeys for " + accountName + " was found"));
+    }
+
+    /**
+     * Returns public keys
+     *
+     * @param accountId - id of account which public keys are requested
+     * @param accounts    - list full of account information(name, domain, pubKeys, quorum)
+     * @return list of public keys
+     * @throws IllegalArgumentException if there is no public keys we are interested in
+     */
+    static List<byte[]> getPubKeysByAccountId(String accountId, List<ChangelogAccountPublicInfo> accounts) {
+        return accounts.stream().filter(
+                account -> accountId.equals(account.getAccountName() + "@" + account.getDomainId())
+        ).findFirst().map(accountPublicInfo -> {
+            if (accountPublicInfo.getPubKeys().isEmpty()) {
+                throw new IllegalArgumentException("Account " + accountId + " has no pubKeys");
+            }
+            return accountPublicInfo.getPubKeys().stream().map(DatatypeConverter::parseHexBinary
+            ).collect(Collectors.toList());
+        }).orElseThrow(() ->
+                new IllegalArgumentException("No pubKeys for " + accountId + " was found"));
     }
 }

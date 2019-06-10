@@ -67,6 +67,41 @@ class ChangelogModuleIntegrationTest {
     }
 
     /**
+     * @given script file with notary expansion logic
+     * @when script file is passed to changelog service
+     * @then notary is expanded
+     */
+    @Test
+    fun testExecuteNotaryExpansion() = withTestApplication({
+        changelogModule(changelogEnvironment.changelogExecutor)
+    }) {
+        changelogEnvironment.grantPermissionsToSuperuser()
+        val random = Random()
+        val randomSchema = random.nextInt().absoluteValue.toString()
+        //Create file that creates randomly named account
+        val request = changelogEnvironment.createNotaryExpansionChangelogRequest()
+        with(handleRequest(HttpMethod.Post, "/changelog/changelogFile") {
+            setBody(changelogEnvironment.gson.toJson(request))
+        }) {
+            assertEquals(HttpStatusCode.OK, response.status())
+        }
+        val changelogReducedTxHash = JSONObject(
+            changelogEnvironment.queryAPI.getAccountDetails(
+                changelogHistoryStorageAccountId,
+                ChangelogInterface.superuserAccountId,
+                randomSchema
+            )
+        ).getJSONObject(ChangelogInterface.superuserAccountId).get(randomSchema).toString()
+        assertNotNull(changelogReducedTxHash)
+
+        val account = changelogEnvironment.queryAPI.getAccount(changelogEnvironment.notaryAccountId).account
+        assertEquals(
+            2,
+            account.quorum
+        )
+    }
+
+    /**
      * @given script file with Iroha account creation logic
      * @when script file is passed to changelog service twice
      * @then account is created, second changelog attempt didn't make any effect
