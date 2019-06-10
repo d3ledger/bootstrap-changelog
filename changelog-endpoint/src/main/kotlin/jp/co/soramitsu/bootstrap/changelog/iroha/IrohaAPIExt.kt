@@ -87,6 +87,25 @@ fun IrohaAPI.sendBatchMST(transactions: List<TransactionOuterClass.Transaction>)
 }
 
 /**
+ * Send signed transaction to Iroha
+ * @param transaction - transaction to send
+ */
+fun IrohaAPI.send(transaction: TransactionOuterClass.Transaction): Result<Unit, Exception> {
+    val txHash = Utils.hash(transaction)
+    logger.info("Send tx:${Utils.toHex(txHash)}")
+    return Result.of {
+        this.transactionSync(transaction)
+        val txStatus = TxStatus.createEmpty()
+        logger.info("Wait terminal statuses: ${Utils.toHex(txHash)}")
+        waitForTerminalStatusMST.subscribe(this, txHash)
+            .blockingSubscribe(createTxStatusObserverMST(txStatus))
+        if (txStatus.failed()) {
+            throw Exception("Iroha batch error", txStatus.txException)
+        }
+    }
+}
+
+/**
  * Returns hashes of given transactions in HEX format
  * @param transactions - transactions that will be used to get hashes
  * @return transaction hashes in HEX format

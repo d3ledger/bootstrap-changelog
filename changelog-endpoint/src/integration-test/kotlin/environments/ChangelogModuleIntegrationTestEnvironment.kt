@@ -1,5 +1,6 @@
 package environments
 
+import com.github.kittinunf.result.Result
 import com.google.gson.Gson
 import iroha.protocol.BlockOuterClass
 import iroha.protocol.Primitive
@@ -10,6 +11,7 @@ import jp.co.soramitsu.bootstrap.changelog.dto.ChangelogFileRequest
 import jp.co.soramitsu.bootstrap.changelog.dto.ChangelogRequestDetails
 import jp.co.soramitsu.bootstrap.changelog.dto.ChangelogScriptRequest
 import jp.co.soramitsu.bootstrap.changelog.dto.HexKeyPair
+import jp.co.soramitsu.bootstrap.changelog.iroha.send
 import jp.co.soramitsu.bootstrap.changelog.parser.ChangelogParser
 import jp.co.soramitsu.bootstrap.changelog.service.ChangelogExecutorService
 import jp.co.soramitsu.bootstrap.changelog.service.ChangelogHistoryService
@@ -159,13 +161,13 @@ class ChangelogModuleIntegrationTestEnvironment : Closeable {
     /**
      * Grants notary account permissions to superuser
      */
-    fun grantPermissionsToSuperuser() {
+    fun grantPermissionsToSuperuser(): Result<Unit, Exception> {
         val tx = Transaction.builder(notaryAccountId)
             .grantPermission(ChangelogInterface.superuserAccountId, Primitive.GrantablePermission.can_add_my_signatory)
             .grantPermission(ChangelogInterface.superuserAccountId, Primitive.GrantablePermission.can_set_my_quorum)
             .sign(notaryKeyPair)
             .build()
-        irohaAPI.transactionSync(tx)
+        return irohaAPI.send(tx)
     }
 
     /**

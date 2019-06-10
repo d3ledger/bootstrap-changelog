@@ -1,5 +1,6 @@
 package endpoint
 
+import com.github.kittinunf.result.failure
 import environments.ChangelogModuleIntegrationTestEnvironment
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
@@ -75,7 +76,7 @@ class ChangelogModuleIntegrationTest {
     fun testExecuteNotaryExpansion() = withTestApplication({
         changelogModule(changelogEnvironment.changelogExecutor)
     }) {
-        changelogEnvironment.grantPermissionsToSuperuser()
+        changelogEnvironment.grantPermissionsToSuperuser().failure { ex -> throw ex }
         val random = Random()
         val randomSchema = random.nextInt().absoluteValue.toString()
         //Create file that creates randomly named account
