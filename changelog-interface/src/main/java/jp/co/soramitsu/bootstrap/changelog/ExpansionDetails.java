@@ -6,8 +6,6 @@ import java.util.Map;
  * Details of expansion process
  */
 public class ExpansionDetails {
-    // Service to expand
-    private String service;
     // accountId to expand
     private String accountIdToExpand;
     // New public key
@@ -16,14 +14,6 @@ public class ExpansionDetails {
     private int quorum;
     // Extra data like Ethereum keys and such
     private Map<String, String> additionalData;
-
-    public String getService() {
-        return service;
-    }
-
-    public void setService(String service) {
-        this.service = service;
-    }
 
     public String getAccountIdToExpand() {
         return accountIdToExpand;
@@ -60,8 +50,7 @@ public class ExpansionDetails {
     @Override
     public String toString() {
         return "ExpansionDetails{" +
-                "service='" + service + '\'' +
-                ", accountIdToExpand='" + accountIdToExpand + '\'' +
+                "accountIdToExpand='" + accountIdToExpand + '\'' +
                 ", publicKey='" + publicKey + '\'' +
                 ", quorum=" + quorum +
                 ", additionalData=" + additionalData +
