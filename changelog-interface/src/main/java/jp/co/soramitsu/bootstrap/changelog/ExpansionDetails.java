@@ -12,6 +12,8 @@ public class ExpansionDetails {
     private String publicKey;
     // New quorum
     private int quorum;
+    // Number of peers before expansion
+    private int peersBeforeExpansion;
 
     public String getService() {
         return service;
@@ -45,6 +47,14 @@ public class ExpansionDetails {
         this.quorum = quorum;
     }
 
+    public int getPeersBeforeExpansion() {
+        return peersBeforeExpansion;
+    }
+
+    public void setPeersBeforeExpansion(int peersBeforeExpansion) {
+        this.peersBeforeExpansion = peersBeforeExpansion;
+    }
+
     @Override
     public String toString() {
         return "ExpansionDetails{" +
@@ -52,6 +62,7 @@ public class ExpansionDetails {
                 ", accountIdToExpand='" + accountIdToExpand + '\'' +
                 ", publicKey='" + publicKey + '\'' +
                 ", quorum=" + quorum +
+                ", peersBeforeExpansion=" + peersBeforeExpansion +
                 '}';
     }
 }
