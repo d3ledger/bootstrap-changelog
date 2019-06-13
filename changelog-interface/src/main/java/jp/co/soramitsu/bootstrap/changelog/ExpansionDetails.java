@@ -44,4 +44,14 @@ public class ExpansionDetails {
     public void setQuorum(int quorum) {
         this.quorum = quorum;
     }
+
+    @Override
+    public String toString() {
+        return "ExpansionDetails{" +
+                "service='" + service + '\'' +
+                ", accountIdToExpand='" + accountIdToExpand + '\'' +
+                ", publicKey='" + publicKey + '\'' +
+                ", quorum=" + quorum +
+                '}';
+    }
 }
