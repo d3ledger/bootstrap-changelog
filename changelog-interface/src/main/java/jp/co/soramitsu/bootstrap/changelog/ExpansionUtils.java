@@ -19,7 +19,7 @@ public class ExpansionUtils {
      * @param triggerAccountId - account that is used as a trigger
      * @return unsigned transaction
      */
-    static Transaction createExpansionTriggerTx(
+    public static Transaction createExpansionTriggerTx(
             ExpansionDetails expansionDetails,
             String triggerAccountId) {
         return Transaction
