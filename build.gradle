@@ -4,10 +4,20 @@ buildscript {
     repositories {
         mavenCentral()
         jcenter()
+        // gradle plugins repository
+        gradlePluginPortal()
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
+}
+
+plugins {
+    id "com.github.dolgopolovwork.testreport" version "1"
+}
+
+testReport {
+    testFolders = Arrays.asList("changelog-endpoint/src/integration-test")
 }
 
 allprojects {
