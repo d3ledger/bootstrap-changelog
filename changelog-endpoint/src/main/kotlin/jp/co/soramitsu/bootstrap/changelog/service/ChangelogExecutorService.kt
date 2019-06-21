@@ -32,31 +32,33 @@ class ChangelogExecutorService(
     /**
      * Executes file based changelog
      * @param changelogRequest - request of changelog to execute
+     * @return status of execution
      */
-    fun execute(changelogRequest: ChangelogFileRequest) {
+    fun execute(changelogRequest: ChangelogFileRequest): ExecutionStatus =
         execute(changelogRequest.details, File(changelogRequest.changelogFile).readText())
-    }
 
     /**
      * Executes script based changelog
      * @param changelogRequest - request of changelog to execute
+     * @return status of execution
      */
-    fun execute(changelogRequest: ChangelogScriptRequest) {
+    fun execute(changelogRequest: ChangelogScriptRequest): ExecutionStatus =
         execute(changelogRequest.details, changelogRequest.script)
-    }
 
     /**
      * Executes changelog
      * @param changelogRequestDetails - changelog request details(environments, project, keys and etc)
      * @param script - script to execute
+     * @return status of execution
      */
     @Synchronized
-    private fun execute(changelogRequestDetails: ChangelogRequestDetails, script: String) {
+    private fun execute(changelogRequestDetails: ChangelogRequestDetails, script: String): ExecutionStatus {
         // Parse changelog script
         val changelog = changelogParser.parse(script)
+        logger.info("Script has been successfully parsed. Script content\n$script")
         if (alreadyExecutedSchema(changelog.schemaVersion, irohaAPI, changelogRequestDetails.superuserKeys)) {
             logger.warn("Schema version '${changelog.schemaVersion}' has been executed already")
-            return
+            return ExecutionStatus.ALREADY_EXECUTED
         }
         val superuserQuorum = getSuperuserQuorum(irohaAPI, changelogRequestDetails.superuserKeys)
         // Create changelog tx
@@ -84,5 +86,12 @@ class ChangelogExecutorService(
                     )
                 },
                 { ex -> throw ex })
+        return ExecutionStatus.SUCCESS
     }
+}
+
+// Status of changelog execution
+enum class ExecutionStatus {
+    SUCCESS,
+    ALREADY_EXECUTED
 }

@@ -19,6 +19,7 @@ import jp.co.soramitsu.bootstrap.changelog.dto.ChangelogFileRequest
 import jp.co.soramitsu.bootstrap.changelog.dto.ChangelogResponse
 import jp.co.soramitsu.bootstrap.changelog.endpoint.validateChangelog
 import jp.co.soramitsu.bootstrap.changelog.service.ChangelogExecutorService
+import jp.co.soramitsu.bootstrap.changelog.service.ExecutionStatus
 import mu.KLogging
 
 private val logger = KLogging().logger
@@ -40,7 +41,13 @@ fun Routing.changelogFile(changelogExecutorService: ChangelogExecutorService) {
         // Validate and execute changelog
         validateChangelog(changelogRequest.details)
         { changelogExecutorService.execute(changelogRequest) }.fold(
-            { call.respond(ChangelogResponse.ok()) },
+            { executionStatus ->
+                if (executionStatus == ExecutionStatus.SUCCESS) {
+                    call.respond(ChangelogResponse.ok())
+                } else if (executionStatus == ExecutionStatus.ALREADY_EXECUTED) {
+                    call.respond(HttpStatusCode.NotModified)
+                }
+            },
             { ex ->
                 // Handle errors
                 logger.error("Cannot execute changelog", ex)

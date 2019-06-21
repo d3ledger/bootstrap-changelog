@@ -13,11 +13,13 @@ import jp.co.soramitsu.iroha.java.TransactionStatusObserver
 import jp.co.soramitsu.iroha.java.Utils
 import jp.co.soramitsu.iroha.java.detail.InlineTransactionStatusObserver
 import jp.co.soramitsu.iroha.java.subscription.WaitForTerminalStatus
+import mu.KLogging
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeoutException
 
 
+private val logger = KLogging().logger
 /**
  * Statuses that we consider terminal
  */
@@ -73,10 +75,13 @@ private fun createTxStatusObserverMST(txStatus: TxStatus): InlineTransactionStat
  * @param transactions - transactions to send
  */
 fun IrohaAPI.sendBatchMST(transactions: List<TransactionOuterClass.Transaction>): Result<Unit, Exception> {
+    val hashes = getHashes(transactions)
+    logger.info("Send batch MST: $hashes")
     return Result.of {
         this.transactionListSync(transactions)
         transactions.map { tx -> Utils.hash(tx) }.forEach { txHash ->
             val txStatus = TxStatus.createEmpty()
+            logger.info("Wait terminal statuses: $hashes")
             waitForTerminalStatusMST.subscribe(this, txHash)
                 .blockingSubscribe(createTxStatusObserverMST(txStatus))
             if (txStatus.failed()) {
@@ -85,6 +90,33 @@ fun IrohaAPI.sendBatchMST(transactions: List<TransactionOuterClass.Transaction>)
         }
     }
 }
+
+/**
+ * Send signed transaction to Iroha
+ * @param transaction - transaction to send
+ */
+fun IrohaAPI.send(transaction: TransactionOuterClass.Transaction): Result<Unit, Exception> {
+    val txHash = Utils.hash(transaction)
+    logger.info("Send tx:${Utils.toHex(txHash)}")
+    return Result.of {
+        this.transactionSync(transaction)
+        val txStatus = TxStatus.createEmpty()
+        logger.info("Wait terminal statuses: ${Utils.toHex(txHash)}")
+        waitForTerminalStatusMST.subscribe(this, txHash)
+            .blockingSubscribe(createTxStatusObserverMST(txStatus))
+        if (txStatus.failed()) {
+            throw Exception("Iroha batch error", txStatus.txException)
+        }
+    }
+}
+
+/**
+ * Returns hashes of given transactions in HEX format
+ * @param transactions - transactions that will be used to get hashes
+ * @return transaction hashes in HEX format
+ */
+fun getHashes(transactions: List<TransactionOuterClass.Transaction>) =
+    transactions.map { tx -> Utils.toHex(Utils.hash(tx)) }
 
 /**
  * Data class that holds information about tx status

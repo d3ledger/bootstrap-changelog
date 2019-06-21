@@ -3,6 +3,8 @@ buildscript {
     repositories {
         mavenCentral()
         jcenter()
+        // gradle plugins repository
+        gradlePluginPortal()
     }
     dependencies {
         classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.1'
@@ -11,6 +13,7 @@ buildscript {
 
 plugins {
     id "org.jetbrains.kotlin.plugin.spring" version "1.3.21"
+    id 'jp.co.soramitsu.sora-plugin' version '0.1.2'
 }
 
 apply plugin: 'application'
@@ -18,7 +21,22 @@ apply plugin: 'com.github.johnrengelman.shadow'
 shadowDistZip.classifier = 'shadow'
 shadowDistTar.classifier = 'shadow'
 
+group 'jp.co.soramitsu.bootstrap.changelog'
 mainClassName = "jp.co.soramitsu.bootstrap.changelog.ChangelogAppMain"
+// name of jar file that the shadowJar plugin generates
+shadowJar.archiveName = 'app.jar'
+
+// sora-plugin configs
+soramitsu {
+    projectGroup = 'd3-deploy'
+    docker {
+        // docker tag
+        tag = System.getenv("TAG")
+        // jar file that is used in the generated Dockerfile
+        jar = new File("build/libs/app.jar")
+        // the rest in configured using env variables
+    }
+}
 
 repositories {
     mavenCentral()
