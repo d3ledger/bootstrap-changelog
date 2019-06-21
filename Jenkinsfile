@@ -14,7 +14,16 @@ pipeline {
                         sh "gradle test --info"
                         sh "gradle compileIntegrationTestKotlin --info"
                         sh "gradle integrationTest --info"
+                        sh "gradle d3TestReport"
                     }
+                publishHTML (target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll: true,
+                    reportDir: 'build/reports',
+                    reportFiles: 'd3-test-report.html',
+                    reportName: "D3 test report"
+                ])
                 }
             }
             post {
@@ -28,26 +37,24 @@ pipeline {
           steps {
             script {
               def scmVars = checkout scm
-              if (env.BRANCH_NAME ==~ /(master|develop|reserved)/) {
+  if (env.BRANCH_NAME ==~ /(master|develop|reserved)/ || env.TAG_NAME) {
                 withCredentials([usernamePassword(credentialsId: 'nexus-d3-docker', usernameVariable: 'login', passwordVariable: 'password')]) {
-                  sh "docker login nexus.iroha.tech:19002 -u ${login} -p '${password}'"
 
-                  TAG = env.BRANCH_NAME
+                  TAG = env.TAG_NAME ? env.TAG_NAME : env.BRANCH_NAME
                   iC = docker.image("gradle:4.10.2-jdk8-slim")
-                  iC.inside("-e JVM_OPTS='-Xmx3200m' -e TERM='dumb'") {
+                  iC.inside(" -e JVM_OPTS='-Xmx3200m' -e TERM='dumb'"+
+                  " -v /var/run/docker.sock:/var/run/docker.sock -v /tmp:/tmp"+
+                  " -e DOCKER_REGISTRY_URL='https://nexus.iroha.tech:19002'"+
+                  " -e DOCKER_REGISTRY_USERNAME='${login}'"+
+                  " -e DOCKER_REGISTRY_PASSWORD='${password}'"+
+                  " -e TAG='${TAG}'") {
                     sh "gradle shadowJar"
+                    sh "gradle dockerPush"
                   }
-
-                  def nexusRepository="nexus.iroha.tech:19002/${login}"
-
-                  changelog = docker.build("${nexusRepository}/changelog:${TAG}", "-f changelog-endpoint/Dockerfile ./changelog-endpoint")
-
-                  changelog.push("${TAG}")
-                }
+                 }
               }
             }
           }
         }
-
     }
 }
