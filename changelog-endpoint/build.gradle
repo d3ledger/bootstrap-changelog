@@ -23,6 +23,11 @@ shadowDistTar.classifier = 'shadow'
 
 group 'jp.co.soramitsu.bootstrap.changelog'
 mainClassName = "jp.co.soramitsu.bootstrap.changelog.ChangelogAppMain"
+/*
+ * Copyright D3 Ledger, Inc. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 // name of jar file that the shadowJar plugin generates
 shadowJar.archiveName = 'app.jar'
 
