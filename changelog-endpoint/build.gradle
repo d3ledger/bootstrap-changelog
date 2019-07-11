@@ -108,11 +108,7 @@ task integrationTest(type: Test) {
     // Enable JUnit5 tests
     useJUnitPlatform {
     }
-
-    mustRunAfter test
 }
-check.dependsOn integrationTest
-
 
 compileKotlin {
     kotlinOptions {
@@ -123,4 +119,10 @@ compileTestKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+}
+
+project.afterEvaluate {
+    dockerfileCreate.dependsOn(shadowJar)
+    integrationTest.dependsOn(dockerfileCreate)
+    test.finalizedBy(integrationTest)
 }
