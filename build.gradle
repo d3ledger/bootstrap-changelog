@@ -52,3 +52,7 @@ allprojects {
         kotlinOptions.jvmTarget = "1.8"
     }
 }
+
+project.afterEvaluate {
+    test.finalizedBy(d3TestReport)
+}
