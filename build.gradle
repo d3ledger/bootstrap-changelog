@@ -36,7 +36,7 @@ allprojects {
 allprojects {
     dependencies {
         // Iroha Pure Java library
-        compile 'com.github.hyperledger.iroha-java:client:5.1.1'
+        compile 'com.github.hyperledger.iroha-java:client:6.0.0'
         compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
         // unit tests
         testCompile('org.junit.jupiter:junit-jupiter-api:5.2.0')
