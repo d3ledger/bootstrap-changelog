@@ -49,16 +49,6 @@ data class HexKeyPair(val pubKey: String, val privKey: String) {
 }
 
 /**
- * Changelog file based request data
- * @param changelogFile - path to changelog script file
- * @param details -details of request
- */
-data class ChangelogFileRequest(
-    val changelogFile: String,
-    val details: ChangelogRequestDetails
-)
-
-/**
  * Changelog script based request data
  * @param script - changelog groovy script
  * @param details - details of request
