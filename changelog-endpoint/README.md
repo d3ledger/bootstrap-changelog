@@ -9,8 +9,7 @@ The `changelog-endpoint` module is a REST service intended for Iroha data model 
 
 ## Brief API documentation
 Available endpoints:
-1) `/changelog/changelogFile` - executes changelog Groovy script file absolute path of which is defined in a JSON request. 
-2) `/changelog/changelogScript`- executes changelog Groovy script code of which is defined in a JSON request.
+- `/changelog/changelogScript`- executes changelog Groovy script code of which is defined in a JSON request.
  
 Complete documentation is available at http://localhost:9999/apidocs/
 

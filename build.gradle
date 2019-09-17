@@ -1,3 +1,8 @@
+/*
+ * Copyright D3 Ledger, Inc. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 buildscript {
     ext.kotlin_version = '1.3.10'
 
@@ -36,10 +41,10 @@ allprojects {
 allprojects {
     dependencies {
         // Iroha Pure Java library
-        compile 'com.github.hyperledger.iroha-java:client:6.0.0'
-        compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+        implementation 'com.github.hyperledger.iroha-java:client:6.1.0'
+        implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
         // unit tests
-        testCompile('org.junit.jupiter:junit-jupiter-api:5.2.0')
+        testImplementation('org.junit.jupiter:junit-jupiter-api:5.2.0')
         testRuntime('org.junit.jupiter:junit-jupiter-engine:5.2.0')
     }
 }
