@@ -18,6 +18,7 @@ buildscript {
 }
 
 plugins {
+    id "org.sonarqube" version "2.7.1"
     id "com.github.dolgopolovwork.testreport" version "1"
 }
 
@@ -35,6 +36,16 @@ allprojects {
         jcenter()
         maven { url = 'https://dl.bintray.com/kotlin/ktor' }
         maven { url 'https://jitpack.io' }
+    }
+    sonarqube {
+        properties {
+            property "sonar.github.repository", "d3ledger/bootstrap-changelog"
+            property "sonar.projectKey", "d3:bootstrap-changelog"
+            property "sonar.java.binaries", "${project.projectDir}/build/classes"
+            property "sonar.java.libraries", "${project.projectDir}/build/libs"
+            property "sonar.java.test.binaries", "${project.projectDir}/build/test-results/test/binary"
+            property "sonar.exclusions", "**/integration-test/**"
+        }
     }
 }
 
