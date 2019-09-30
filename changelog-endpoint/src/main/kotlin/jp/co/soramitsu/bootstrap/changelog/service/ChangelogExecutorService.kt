@@ -7,11 +7,10 @@ package jp.co.soramitsu.bootstrap.changelog.service
 
 import jp.co.soramitsu.bootstrap.changelog.dto.ChangelogScriptRequest
 import jp.co.soramitsu.bootstrap.changelog.helper.*
-import jp.co.soramitsu.bootstrap.changelog.iroha.sendBatchMST
+import jp.co.soramitsu.bootstrap.changelog.iroha.IrohaBatchConsumer
 import jp.co.soramitsu.bootstrap.changelog.parser.ChangelogParser
 import jp.co.soramitsu.iroha.java.IrohaAPI
 import mu.KLogging
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 /**
@@ -19,9 +18,10 @@ import org.springframework.stereotype.Component
  */
 @Component
 class ChangelogExecutorService(
-    @Autowired private val changelogParser: ChangelogParser,
-    @Autowired private val changelogHistoryService: ChangelogHistoryService,
-    @Autowired private val irohaAPI: IrohaAPI
+    private val changelogParser: ChangelogParser,
+    private val changelogHistoryService: ChangelogHistoryService,
+    private val irohaAPI: IrohaAPI,
+    private val irohaBatchConsumer: IrohaBatchConsumer
 ) {
 
     private val logger = KLogging().logger
@@ -60,12 +60,10 @@ class ChangelogExecutorService(
         // Sign changelog batch
         signChangelogBatch(changelogBatch, changelogRequestDetails.superuserKeys)
         // Send batch
-        irohaAPI
+        irohaBatchConsumer
             .sendBatchMST(changelogBatch.map { tx -> tx.build() }).fold(
                 {
-                    logger.info(
-                        "Changelog batch (schemaVersion:${changelog.schemaVersion}) has been successfully sent"
-                    )
+                    logger.info("Changelog batch (schemaVersion:${changelog.schemaVersion}) has been successfully sent")
                 },
                 { ex -> throw ex })
         return ExecutionStatus.SUCCESS
