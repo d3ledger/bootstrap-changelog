@@ -23,7 +23,7 @@ class IrohaBatchConsumerDebug(irohaAPI: IrohaAPI) : IrohaBatchConsumerProd(iroha
      */
     private val terminalStatusesMST =
         listOf(
-            //TODO this is the only difference between 'prod'
+            //this is the only difference between 'prod'
             //Endpoint.TxStatus.MST_PENDING,
             Endpoint.TxStatus.STATELESS_VALIDATION_FAILED,
             Endpoint.TxStatus.STATEFUL_VALIDATION_FAILED,
