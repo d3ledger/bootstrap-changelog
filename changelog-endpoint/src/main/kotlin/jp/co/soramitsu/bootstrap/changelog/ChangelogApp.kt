@@ -7,6 +7,7 @@
 
 package jp.co.soramitsu.bootstrap.changelog
 
+import com.d3.commons.config.PROFILE_ENV
 import com.github.kittinunf.result.Result
 import com.github.kittinunf.result.failure
 import com.github.kittinunf.result.map
@@ -21,6 +22,7 @@ import jp.co.soramitsu.bootstrap.changelog.service.ChangelogExecutorService
 import mu.KLogging
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.ComponentScan
+import kotlin.system.exitProcess
 
 private val logger = KLogging().logger
 
@@ -30,9 +32,13 @@ class ChangelogApp
 /**
  * Changelog main endpoint
  */
-fun main(args: Array<String>) {
+fun main() {
     Result.of {
-        AnnotationConfigApplicationContext(ChangelogApp::class.java)
+        val context = AnnotationConfigApplicationContext()
+        context.environment.setActiveProfiles(getChangelogProfile())
+        context.register(ChangelogApp::class.java)
+        context.refresh()
+        context
     }.map { context ->
         val changelogExecutor = context.getBean(ChangelogExecutorService::class.java)
         val env = applicationEngineEnvironment {
@@ -47,6 +53,21 @@ fun main(args: Array<String>) {
         embeddedServer(Netty, env).start(true)
     }.failure { ex ->
         logger.error("Cannot start changelog service", ex)
-        System.exit(1)
+        exitProcess(1)
     }
+}
+
+/**
+ * Returns current profile based on environment variable
+ */
+fun getChangelogProfile(): String {
+    val defaultProfile = "prod"
+    var profile = System.getenv(PROFILE_ENV)
+    if (profile == null) {
+        logger.warn("No profile set for changelog. Using default '$defaultProfile' profile")
+        profile = defaultProfile
+    } else {
+        logger.info("Profile is $profile")
+    }
+    return profile
 }

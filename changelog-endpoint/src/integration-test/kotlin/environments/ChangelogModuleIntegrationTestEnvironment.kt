@@ -14,6 +14,7 @@ import jp.co.soramitsu.bootstrap.changelog.ChangelogInterface
 import jp.co.soramitsu.bootstrap.changelog.dto.ChangelogRequestDetails
 import jp.co.soramitsu.bootstrap.changelog.dto.ChangelogScriptRequest
 import jp.co.soramitsu.bootstrap.changelog.dto.HexKeyPair
+import jp.co.soramitsu.bootstrap.changelog.iroha.IrohaBatchConsumerDebug
 import jp.co.soramitsu.bootstrap.changelog.parser.ChangelogParser
 import jp.co.soramitsu.bootstrap.changelog.service.ChangelogExecutorService
 import jp.co.soramitsu.bootstrap.changelog.service.ChangelogHistoryService
@@ -146,7 +147,8 @@ class ChangelogModuleIntegrationTestEnvironment : Closeable {
     val changelogExecutor = ChangelogExecutorService(
         ChangelogParser(),
         ChangelogHistoryService(),
-        irohaAPI
+        irohaAPI,
+        IrohaBatchConsumerDebug(irohaAPI)
     )
 
     val queryAPI = QueryAPI(
